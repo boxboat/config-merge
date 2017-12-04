@@ -14,7 +14,7 @@ const envReserved = new Set(["_", "SHLVL"])
 
 // prints the help message
 function printHelp() {
-    console.error("config-merge [-fnh] file1 [file2] ... [fileN]")
+    console.error("boxboat/config-merge [-fnh] file1 [file2] ... [fileN]")
     console.error("-f, --format   json|yaml    whether to output json or yaml.  defaults to yaml")
     console.error("-n  --inline   integer depth to start using inline notation at.  defaults to 10. set to 0 to disable")
     console.error("-h  --help     print the help message")

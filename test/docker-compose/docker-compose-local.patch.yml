@@ -1,0 +1,4 @@
+- op: remove
+  path: /networks/ucp-hrm
+- op: remove
+  path: /services/nginx/networks/1

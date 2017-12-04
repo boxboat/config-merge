@@ -1,0 +1,13 @@
+version: "3.4"
+
+networks:
+  default:
+  ucp-hrm:
+    external: true
+
+services:
+  nginx:
+    image: "nginx:alpine"
+    networks:
+      - default
+      - ucp-hrm

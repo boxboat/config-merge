@@ -1,17 +1,48 @@
 # Config Merge
 
-Tool for merging YAML/JSON files and performing environment variable substitution.
+Tool for merging YAML/JSON files and performing environment variable substitution.  Runs in a Docker Container.
 
 ## Usage
 
+`config-merge` is released on [DockerHub](https://hub.docker.com/r/boxboat/config-merge/).  Usage can be seen by running with the `-h` flag
+
 ```
-config-merge [-fnh] file1 [file2] ... [fileN]
+docker pull boxboat/config-merge
+docker run --rm boxboat/config-merge -h
+
+boxboat/config-merge [-fnh] file1 [file2] ... [fileN]
 -f, --format   json|yaml    whether to output json or yaml.  defaults to yaml
 -n  --inline   integer depth to start using inline notation at.  defaults to 10. set to 0 to disable
 -h  --help     print the help message
     files ending in .env and .sh will be sourced and used for environment variable substitution
     files ending in .yml, .yaml, .json, and .js will be merged
     files ending in .patch.yml, .patch.yaml, .patch.json, and .patch.js will be applied as JSONPatch
+```
+
+## Example
+
+This example considers building a Docker Compose file that can be used for production, but also tested locally.  The production compose file contains an extra network that is not available to the local developer.  We are able to use the patching feature of `config-merge` to remove the unneeded network, and use the environment variable substitution feature to add a custom network. 
+
+```
+docker_compose_config=$(
+    docker run --rm \
+        -v "$(pwd)/test/docker-compose/local.env:/home/node/local.env" \
+        -v "$(pwd)/test/docker-compose/docker-compose.yml:/home/node/docker-compose.yml" \
+        -v "$(pwd)/test/docker-compose/docker-compose-local.patch.yml:/home/node/docker-compose-local.patch.yml" \
+        -v "$(pwd)/test/docker-compose/docker-compose-local.yml:/home/node/docker-compose-local.yml" \
+        boxboat/config-merge \
+        local.env docker-compose.yml docker-compose-local.patch.yml docker-compose-local.yml
+)
+
+# Run with Docker Compose
+docker-compose -f - -p nginx-local up <<EOF
+$docker_compose_config
+EOF
+
+# Deploy to Swarm
+docker stack deploy -c - nginx-local <<EOF
+$docker_compose_config
+EOF
 ```
 
 ## Merging
