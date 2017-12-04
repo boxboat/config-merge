@@ -1,0 +1,11 @@
+array-yaml:
+  - 1
+  - 2
+greeting-yaml: ${GREETING-none}
+nested-yaml:
+  nested-yaml:
+    nested-yaml:
+      nested-yaml:
+        nested: true
+remove-yaml: yaml
+override-yaml: original

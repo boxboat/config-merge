@@ -1,0 +1,16 @@
+[
+    {
+      "op": "remove",
+      "path": "/remove-json"
+    },
+    {
+      "op": "add",
+      "path": "/array-json/-",
+      "value": 3
+    },
+    {
+      "op": "add",
+      "path": "/array-json/-",
+      "value": 4
+    }
+]

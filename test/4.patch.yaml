@@ -1,0 +1,8 @@
+- op: remove
+  path: /remove-yaml
+- op: add
+  path: /array-yaml/-
+  value: 3
+- op: add
+  path: /array-yaml/-
+  value: 4

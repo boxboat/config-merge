@@ -1,0 +1,15 @@
+{
+    "array-json": [1, 2],
+    "nested-json": {
+      "nested-json": {
+        "nested-json": {
+          "nested-json": {
+            "nested": true
+          }
+        }
+      }
+    },
+    "greeting-json": "${GREETING-none}",
+    "override-json": "original",
+    "remove-json": "json"
+}
