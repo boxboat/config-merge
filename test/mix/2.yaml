@@ -2,6 +2,7 @@ array-yaml:
   - 1
   - 2
 greeting-yaml: ${GREETING-none}
+int-yaml: ${ONE}
 nested-yaml:
   nested-yaml:
     nested-yaml:

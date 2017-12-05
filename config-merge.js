@@ -45,6 +45,11 @@ function envsubst(text){
     }).toString('utf8')
 }
 
+// read a file and substitute environment variables
+function readFileAndSubEnv(file){
+    return envsubst(fs.readFileSync(path.resolve(file), 'utf8'))
+}
+
 let args = process.argv.slice(2)
 let processPositional = true
 let setFlag = null
@@ -113,16 +118,16 @@ for (let arg of args) {
             loadSource(arg)
         }
         else if (arg.match(patchJsonRe)) {
-            applyPatch(obj, JSON.parse(fs.readFileSync(path.resolve(arg), 'utf8')))
+            applyPatch(obj, JSON.parse(readFileAndSubEnv(arg)))
         }
         else if (arg.match(patchYamlRe)) {
-            applyPatch(obj, YAML.parse(fs.readFileSync(path.resolve(arg), 'utf8')))
+            applyPatch(obj, YAML.parse(readFileAndSubEnv(arg)))
         }
         else if (arg.match(mergeJsonRe)) {
-            merge(obj, JSON.parse(fs.readFileSync(path.resolve(arg), 'utf8')))
+            merge(obj, JSON.parse(readFileAndSubEnv(arg)))
         }
         else if (arg.match(mergeYamlRe)) {
-            merge(obj, YAML.parse(fs.readFileSync(path.resolve(arg), 'utf8')))
+            merge(obj, YAML.parse(readFileAndSubEnv(arg)))
         } else {
             console.error(`Invalid file extension: ${arg}`)
             printHelp()
@@ -141,15 +146,6 @@ if (format == "json"){
     serialized = JSON.stringify(obj, null, "  ")
 } else {
     serialized = YAML.stringify(obj, inline <= 0 ? 999 : inline, 2)
-}
-
-// substitute environment variables
-try{
-    serialized = envsubst(serialized)
-} catch (err) {
-    console.error(`Error when substituting environment`)
-    console.error(err)
-    process.exit(1)
 }
 
 if (format == "json"){
