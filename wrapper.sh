@@ -1,3 +1,3 @@
 #!/bin/sh
 
-node /usr/local/config-merge/config-merge.js "$@" 
+exec node /usr/local/config-merge/config-merge.js "$@" 

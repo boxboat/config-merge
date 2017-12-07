@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "dependencies": {
     "fast-json-patch": "^2.0.6",
+    "glob": "^7.1.2",
     "lodash.merge": "^4.6.0",
     "yamljs": "^0.3.0"
   }

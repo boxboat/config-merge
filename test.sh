@@ -4,23 +4,20 @@ set -e
 
 echo "YAML:"
 docker run --rm \
-    -v "$(pwd)/test/mix:/home/node/test/mix" \
+    -v "$(pwd)/test/mix/:/home/node/" \
     boxboat/config-merge \
-    -n 4 test/mix/*
+    -n 4 "*"
 echo ""
 
 echo "JSON:"
 docker run --rm \
-    -v "$(pwd)/test/mix:/home/node/test/mix" \
+    -v "$(pwd)/test/mix/:/home/node/" \
     boxboat/config-merge \
-    -f json test/mix/*
+    -f json "*"
 echo ""
 
 echo "Docker Compose"
 docker run --rm \
-    -v "$(pwd)/test/docker-compose/local.env:/home/node/local.env" \
-    -v "$(pwd)/test/docker-compose/docker-compose.yml:/home/node/docker-compose.yml" \
-    -v "$(pwd)/test/docker-compose/docker-compose-local.patch.yml:/home/node/docker-compose-local.patch.yml" \
-    -v "$(pwd)/test/docker-compose/docker-compose-local.yml:/home/node/docker-compose-local.yml" \
+    -v "$(pwd)/test/docker-compose/:/home/node/" \
     boxboat/config-merge \
     local.env docker-compose.yml docker-compose-local.patch.yml docker-compose-local.yml
