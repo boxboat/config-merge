@@ -1,4 +1,5 @@
 const fs = require('fs')
+const glob = require('glob')
 const merge = require('lodash.merge')
 const path = require('path')
 const YAML = require('yamljs')
@@ -64,6 +65,7 @@ if (args.length == 0){
 }
 
 // iterate through each arg
+let positionalArgCount = 0
 for (let arg of args) {
 
     // process positional arguments
@@ -98,13 +100,29 @@ for (let arg of args) {
         else if (arg == "-n" || arg == "--inline"){
             setFlag = "n"
         } else {
-            processPositional = false
+            break
         }
-        if (processPositional){
-            continue
-        }
+        positionalArgCount++
     }
 
+}
+
+// remove the positional args
+args = args.slice(positionalArgCount)
+
+// process glob arguments
+let globArgs = []
+for (let arg of args){
+    if (glob.hasMagic(arg)){
+        globArr = glob.sync(arg)
+        globArgs.push(...globArr)
+    } else {
+        globArgs.push(arg)
+    }
+}
+
+// process files
+for (arg of globArgs){
     // check that file exists
     if (!fs.existsSync(path.resolve(arg))) {
         console.error(`File does not exist: ${arg}`)
