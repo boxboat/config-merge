@@ -19,19 +19,18 @@ boxboat/config-merge [-fnh] file1 [file2] ... [fileN]
     files ending in .patch.yml, .patch.yaml, .patch.json, and .patch.js will be applied as JSONPatch
 ```
 
+The working directory of the container is `/home/node` and files/directories that get merged should be mounted into this directory.
+
 ## Example
 
-This example considers building a Docker Compose file that can be used for production, but also tested locally.  The production compose file contains an extra network that is not available to the local developer.  We are able to use the patching feature of `config-merge` to remove the unneeded network, and use the environment variable substitution feature to add a custom network. 
+This example considers building a Docker Compose file that can be used for production, but also tested locally.  The production compose file contains an extra network that is not available to the local developer.  We are able to use the patching feature of `config-merge` to remove the unneeded network, and use the environment variable substitution feature to add a custom network.
 
 ```
 docker_compose_config=$(
     docker run --rm \
-        -v "$(pwd)/test/docker-compose/local.env:/home/node/local.env" \
-        -v "$(pwd)/test/docker-compose/docker-compose.yml:/home/node/docker-compose.yml" \
-        -v "$(pwd)/test/docker-compose/docker-compose-local.patch.yml:/home/node/docker-compose-local.patch.yml" \
-        -v "$(pwd)/test/docker-compose/docker-compose-local.yml:/home/node/docker-compose-local.yml" \
-        boxboat/config-merge \
-        local.env docker-compose.yml docker-compose-local.patch.yml docker-compose-local.yml
+    -v "$(pwd)/test/docker-compose/:/home/node/" \
+    boxboat/config-merge \
+    local.env docker-compose.yml docker-compose-local.patch.yml docker-compose-local.yml
 )
 
 # Run with Docker Compose
@@ -43,6 +42,17 @@ EOF
 docker stack deploy -c - nginx-local <<EOF
 $docker_compose_config
 EOF
+```
+
+Globbing is supported, but should be escaped in the `docker run` script so that expansion will occur inside fo the container:
+
+```
+docker_compose_config=$(
+    docker run --rm \
+    -v "$(pwd)/test/docker-compose/:/home/node/" \
+    boxboat/config-merge \
+    "*.env" docker-compose.yml "*-local*"
+)
 ```
 
 ## Merging
