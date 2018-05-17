@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/boxboat/config-merge.svg?branch=master)](https://travis-ci.org/boxboat/config-merge)
 
-Tool for merging YAML/JSON files and performing environment variable substitution.  Runs in a Docker Container.
+Tool for merging JSON/TOML/YAML files and performing environment variable substitution.  Runs in a Docker Container.
 
 ## Usage
 
