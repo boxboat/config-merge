@@ -2,18 +2,25 @@
 
 set -e
 
-echo "YAML:"
-docker run --rm \
-    -v "$(pwd)/test/mix/:/home/node/" \
-    boxboat/config-merge \
-    -n 4 "*"
-echo ""
-
 echo "JSON:"
 docker run --rm \
     -v "$(pwd)/test/mix/:/home/node/" \
     boxboat/config-merge \
     -f json "*"
+echo ""
+
+echo "TOML:"
+docker run --rm \
+    -v "$(pwd)/test/mix/:/home/node/" \
+    boxboat/config-merge \
+    -f toml "*"
+echo ""
+
+echo "YAML:"
+docker run --rm \
+    -v "$(pwd)/test/mix/:/home/node/" \
+    boxboat/config-merge \
+    -n 4 "*"
 echo ""
 
 echo "Docker Compose"

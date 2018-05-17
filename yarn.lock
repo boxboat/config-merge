@@ -27,7 +27,7 @@ deep-equal@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
 
-fast-json-patch@^2.0.6:
+fast-json-patch@2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-json-patch/-/fast-json-patch-2.0.6.tgz#86fff8f8662391aa819722864d632e603e6ee605"
   dependencies:
@@ -37,7 +37,7 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
 
-glob@^7.0.5, glob@^7.1.2:
+glob@7.1.2, glob@^7.0.5:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.2.tgz#c19c9df9a028702d678612384a6552404c636d15"
   dependencies:
@@ -59,7 +59,7 @@ inherits@2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
 
-lodash.merge@^4.6.0:
+lodash.merge@4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.0.tgz#69884ba144ac33fe699737a6086deffadd0f89c5"
 
@@ -83,11 +83,19 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
 
+toml-j0.4@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/toml-j0.4/-/toml-j0.4-1.1.1.tgz#eb0c70348609a0263bb1d6e4a3dd191dcca60866"
+
+tomlify-j0.4@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/tomlify-j0.4/-/tomlify-j0.4-3.0.0.tgz#99414d45268c3a3b8bf38be82145b7bba34b7473"
+
 wrappy@1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
 
-yamljs@^0.3.0:
+yamljs@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/yamljs/-/yamljs-0.3.0.tgz#dc060bf267447b39f7304e9b2bfbe8b5a7ddb03b"
   dependencies:

@@ -1,0 +1,8 @@
+remove-toml = "toml"
+override-toml = "original"
+array-toml = [ 1, 2,]
+greeting-toml = "${GREETING-none}"
+int-toml = ${ONE}
+
+[nested-toml.nested-toml.nested-toml.nested-toml]
+nested = true
