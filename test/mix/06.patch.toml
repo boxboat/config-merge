@@ -1,0 +1,13 @@
+[[patch]]
+path = "/remove-toml"
+op = "remove"
+
+[[patch]]
+path = "/array-toml/-"
+value = 3
+op = "add"
+
+[[patch]]
+path = "/array-toml/-"
+value = 4
+op = "add"

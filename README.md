@@ -1,5 +1,7 @@
 # Config Merge
 
+[![Build Status](https://travis-ci.org/boxboat/config-merge.svg?branch=master)](https://travis-ci.org/boxboat/config-merge)
+
 Tool for merging YAML/JSON files and performing environment variable substitution.  Runs in a Docker Container.
 
 ## Usage
@@ -11,12 +13,12 @@ docker pull boxboat/config-merge
 docker run --rm boxboat/config-merge -h
 
 boxboat/config-merge [-fnh] file1 [file2] ... [fileN]
--f, --format   json|yaml    whether to output json or yaml.  defaults to yaml
+-f, --format   json|toml|yaml    whether to output json, toml, or yaml.  defaults to yaml
 -n  --inline   integer depth to start using inline notation at.  defaults to 10. set to 0 to disable
 -h  --help     print the help message
     files ending in .env and .sh will be sourced and used for environment variable substitution
-    files ending in .yml, .yaml, .json, and .js will be merged
-    files ending in .patch.yml, .patch.yaml, .patch.json, and .patch.js will be applied as JSONPatch
+    files ending in .json, .js, .toml, .yaml, and .yml will be merged
+    files ending in .patch.json, .patch.js, .patch.toml, .patch.yaml, and .patch.yml will be applied as JSONPatch
 ```
 
 The working directory of the container is `/home/node` and files/directories that get merged should be mounted into this directory.
@@ -57,13 +59,13 @@ docker_compose_config=$(
 
 ## Merging
 
-Files ending in `.yaml`, `.yml`, `.json`, and `.js` are merged together.  The merging algorithm uses the [lodash merge](https://lodash.com/docs/4.17.4#merge) function and operates:
+Files ending in `.json`, `.js`, `.toml`, `.yaml`, and `.yml` are merged together.  The merging algorithm uses the [lodash merge](https://lodash.com/docs/4.17.4#merge) function and operates:
 
 > Source properties that resolve to undefined are skipped if a destination value exists. Array and plain object properties are merged recursively. Other objects and value types are overridden by assignment. Source objects are applied from left to right. Subsequent sources overwrite property assignments of previous sources.
 
 ## Patching
 
-Files ending in `.patch.yaml`, `.patch.yml`, `.patch.json`, and `.patch.js` are applied as [JSON Patch](http://jsonpatch.com/)
+Files ending in `.patch.json`, `.patch.js`, `.patch.toml`, `.patch.yaml`, and `.patch.yml` are applied as [JSON Patch](http://jsonpatch.com/)
 
 ## Environment Variable Substitution
 
