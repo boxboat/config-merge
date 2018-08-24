@@ -46,7 +46,7 @@ $docker_compose_config
 EOF
 ```
 
-Globbing is supported, but should be escaped in the `docker run` script so that expansion will occur inside fo the container:
+Globbing is supported, but should be escaped in the `docker run` script so that expansion will occur inside of the container:
 
 ```
 docker_compose_config=$(
