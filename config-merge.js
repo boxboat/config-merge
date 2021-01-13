@@ -2,7 +2,7 @@ const fs = require('fs')
 const glob = require('glob')
 const merge = require('lodash.merge')
 const path = require('path')
-const YAML = require('yamljs')
+const YAML = require('yaml')
 const toml = require('toml-j0.4')
 const tomlify = require('tomlify-j0.4')
 const { applyPatch } = require('fast-json-patch')
@@ -201,7 +201,8 @@ if (format == "json") {
         }
     })
 } else {
-    serialized = YAML.stringify(obj, inline <= 0 ? 999 : inline, 2)
+    YAML.defaultOptions.simpleKeys = true
+    serialized = YAML.stringify(obj)
 }
 
 if (format == "json" || format == "toml") {
