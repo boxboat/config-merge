@@ -1,6 +1,11 @@
 array-yaml:
   - 1
   - 2
+array-obj:
+  - key1: key1
+    key2: key2
+  - key1: key1
+    key2: key2
 greeting-yaml: ${GREETING-none}
 int-yaml: ${ONE}
 nested-yaml:
