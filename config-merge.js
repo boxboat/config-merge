@@ -19,9 +19,8 @@ const envReserved = new Set(["_", "SHLVL"])
 
 // prints the help message
 function printHelp() {
-    console.error("boxboat/config-merge [-fnh] file1 [file2] ... [fileN]")
+    console.error("boxboat/config-merge [flags] file1 [file2] ... [fileN]")
     console.error("-f, --format   json|toml|yaml    whether to output json, toml, or yaml.  defaults to yaml")
-    console.error("-n  --inline   integer depth to start using inline notation at.  defaults to 10. set to 0 to disable")
     console.error("-h  --help     print the help message")
     console.error("    files ending in .env and .sh will be sourced and used for environment variable substitution")
     console.error("    files ending in .json, .js, .toml, .yaml, and .yml will be merged")
@@ -59,7 +58,6 @@ let args = process.argv.slice(2)
 let processPositional = true
 let setFlag = null
 let format = 'yaml'
-let inline = 10
 let obj = {}
 
 // check empty args
@@ -88,21 +86,8 @@ for (let arg of args) {
                 process.exit(1)
             }
         }
-        else if (setFlag == "n") {
-            if (typeof parseInt(arg) === "number") {
-                inline = parseInt(arg)
-                setFlag = null
-            } else {
-                console.error(`Inline argument should be an integer, invalid: ${arg}`)
-                printHelp()
-                process.exit(1)
-            }
-        }
         else if (arg == "-f" || arg == "--foramt") {
             setFlag = "f"
-        }
-        else if (arg == "-n" || arg == "--inline") {
-            setFlag = "n"
         } else {
             break
         }
