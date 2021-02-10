@@ -1,6 +1,6 @@
 const fs = require('fs')
 const glob = require('glob')
-const merge = require('lodash.merge')
+const mergeWith = require('lodash.mergewith')
 const path = require('path')
 const YAML = require('yaml')
 const toml = require('toml-j0.4')
@@ -20,6 +20,7 @@ const envReserved = new Set(["_", "SHLVL"])
 // prints the help message
 function printHelp() {
     console.error("boxboat/config-merge [flags] file1 [file2] ... [fileN]")
+    console.error("-a, --array    merge|overwrite|concat    whether to merge, overwrite, or concatenate arrays.  defaults to merge")
     console.error("-f, --format   json|toml|yaml    whether to output json, toml, or yaml.  defaults to yaml")
     console.error("-h  --help     print the help message")
     console.error("    files ending in .env and .sh will be sourced and used for environment variable substitution")
@@ -57,6 +58,7 @@ function readFileAndSubEnv(file) {
 let args = process.argv.slice(2)
 let processPositional = true
 let setFlag = null
+let array = 'merge'
 let format = 'yaml'
 let obj = {}
 
@@ -76,7 +78,16 @@ for (let arg of args) {
             printHelp()
             process.exit(0)
         }
-        if (setFlag == "f") {
+        if (setFlag == "a") {
+            if (arg == "merge" || arg == "overwrite" || arg == "concat") {
+                array = arg
+                setFlag = null
+            } else {
+                console.error(`Array should be "merge", "overwrite", or "concat", invalid: ${arg}`)
+                printHelp()
+                process.exit(1)
+            }
+        } else if (setFlag == "f") {
             if (arg == "json" || arg == "toml" || arg == "yaml") {
                 format = arg
                 setFlag = null
@@ -85,10 +96,13 @@ for (let arg of args) {
                 printHelp()
                 process.exit(1)
             }
+        } else if (arg == "-a" || arg == "--array") {
+            setFlag = "a"
         }
         else if (arg == "-f" || arg == "--foramt") {
             setFlag = "f"
-        } else {
+        }
+        else {
             break
         }
         positionalArgCount++
@@ -108,6 +122,18 @@ for (let arg of args) {
     } else {
         globArgs.push(arg)
     }
+}
+
+// merge customizer
+function customizer(objValue, srcValue) {
+    if (Array.isArray(objValue)) {
+        if (array == "overwrite") {
+            return srcValue
+        } else if (array == "concat") {
+            return objValue.concat(srcValue)
+        }
+    }
+    return undefined
 }
 
 // process files
@@ -152,13 +178,13 @@ for (arg of globArgs) {
             }
         }
         else if (arg.match(mergeJsonRe)) {
-            merge(obj, JSON.parse(readFileAndSubEnv(arg)))
+            mergeWith(obj, JSON.parse(readFileAndSubEnv(arg)), customizer)
         }
         else if (arg.match(mergeTomlRe)) {
-            merge(obj, toml.parse(readFileAndSubEnv(arg)))
+            mergeWith(obj, toml.parse(readFileAndSubEnv(arg)), customizer)
         }
         else if (arg.match(mergeYamlRe)) {
-            merge(obj, YAML.parse(readFileAndSubEnv(arg)))
+            mergeWith(obj, YAML.parse(readFileAndSubEnv(arg)), customizer)
         } else {
             console.error(`Invalid file extension: ${arg}`)
             printHelp()
