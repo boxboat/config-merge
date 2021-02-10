@@ -1,1 +1,3 @@
 override-yaml: override
+array-obj:
+  - key3: key3

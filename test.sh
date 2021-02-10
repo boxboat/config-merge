@@ -16,11 +16,25 @@ docker run --rm \
     -f toml "*"
 echo ""
 
-echo "YAML:"
+echo "YAML array merge:"
 docker run --rm \
     -v "$(pwd)/test/mix/:/home/node/" \
     boxboat/config-merge \
     "*"
+echo ""
+
+echo "YAML array overwrite:"
+docker run --rm \
+    -v "$(pwd)/test/mix/:/home/node/" \
+    boxboat/config-merge \
+    -a overwrite "*"
+echo ""
+
+echo "YAML array concat:"
+docker run --rm \
+    -v "$(pwd)/test/mix/:/home/node/" \
+    boxboat/config-merge \
+    -a concat "*"
 echo ""
 
 echo "Docker Compose"
