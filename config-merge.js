@@ -8,6 +8,7 @@ const tomlify = require('tomlify-j0.4')
 const { applyPatch } = require('fast-json-patch')
 const { execFileSync } = require('child_process')
 
+// constants
 const envRe = new RegExp(/\.(?:env|sh)$/, "i")
 const mergeJsonRe = new RegExp(/\.(?:json|js)$/, "i")
 const mergeYamlRe = new RegExp(/\.(?:yaml|yml)$/, "i")
@@ -17,12 +18,22 @@ const patchYamlRe = new RegExp(/\.patch\.(?:yaml|yml)$/, "i")
 const patchTomlRe = new RegExp(/\.patch\.toml$/, "i")
 const envReserved = new Set(["_", "SHLVL"])
 
+// variables
+let args = process.argv.slice(2)
+let processPositional = true
+let setFlag = null
+let array = 'merge'
+let doEnvsubst = true
+let format = 'yaml'
+let obj = {}
+
 // prints the help message
 function printHelp() {
     console.error("boxboat/config-merge [flags] file1 [file2] ... [fileN]")
-    console.error("-a, --array    merge|overwrite|concat    whether to merge, overwrite, or concatenate arrays.  defaults to merge")
-    console.error("-f, --format   json|toml|yaml    whether to output json, toml, or yaml.  defaults to yaml")
-    console.error("-h  --help     print the help message")
+    console.error("-a, --array         merge|overwrite|concat   whether to merge, overwrite, or concatenate arrays.  defaults to merge")
+    console.error("-f, --format        json|toml|yaml   whether to output json, toml, or yaml.  defaults to yaml")
+    console.error("-h  --help          print the help message")
+    console.error("    --no-envsubst   disable substituting env vars")
     console.error("    files ending in .env and .sh will be sourced and used for environment variable substitution")
     console.error("    files ending in .json, .js, .toml, .yaml, and .yml will be merged")
     console.error("    files ending in .patch.json, .patch.js, .patch.toml, .patch.yaml, and .patch.yml will be applied as JSONPatch")
@@ -52,15 +63,9 @@ function envsubst(text) {
 
 // read a file and substitute environment variables
 function readFileAndSubEnv(file) {
-    return envsubst(fs.readFileSync(path.resolve(file), 'utf8'))
+    let text = fs.readFileSync(path.resolve(file))
+    return doEnvsubst ? envsubst(text) : text.toString('utf8');
 }
-
-let args = process.argv.slice(2)
-let processPositional = true
-let setFlag = null
-let array = 'merge'
-let format = 'yaml'
-let obj = {}
 
 // check empty args
 if (args.length == 0) {
@@ -96,7 +101,11 @@ for (let arg of args) {
                 printHelp()
                 process.exit(1)
             }
-        } else if (arg == "-a" || arg == "--array") {
+        }
+        else if (arg == "--no-envsubst") {
+            doEnvsubst = false
+        }
+        else if (arg == "-a" || arg == "--array") {
             setFlag = "a"
         }
         else if (arg == "-f" || arg == "--foramt") {

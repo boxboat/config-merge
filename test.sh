@@ -42,3 +42,10 @@ docker run --rm \
     -v "$(pwd)/test/docker-compose/:/home/node/" \
     boxboat/config-merge \
     local.env docker-compose.yml docker-compose-local.patch.yml docker-compose-local.yml
+echo ""
+
+echo "Docker Compose no envsubst"
+docker run --rm \
+    -v "$(pwd)/test/docker-compose/:/home/node/" \
+    boxboat/config-merge \
+    --no-envsubst local.env docker-compose.yml docker-compose-local.patch.yml docker-compose-local.yml
