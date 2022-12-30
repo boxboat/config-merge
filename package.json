@@ -3,7 +3,7 @@
   "license": "MIT",
   "version": "0.2.2",
   "dependencies": {
-    "fast-json-patch": "2.0.6",
+    "fast-json-patch": "3.1.1",
     "glob": "7.1.2",
     "lodash.mergewith": "4.6.2",
     "toml-j0.4": "1.1.1",
