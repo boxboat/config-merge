@@ -13,8 +13,8 @@ docker pull boxboat/config-merge
 docker run --rm boxboat/config-merge -h
 
 boxboat/config-merge [-fnh] file1 [file2] ... [fileN]
--f, --format   json|toml|yaml    whether to output json, toml, or yaml.  defaults to yaml
--n  --inline   integer depth to start using inline notation at.  defaults to 10. set to 0 to disable
+-a, --array    merge|overwrite|concat   whether to merge, overwrite, or concatenate arrays.  defaults to merge
+-f, --format   json|toml|yaml           whether to output json, toml, or yaml.  defaults to yaml
 -h  --help     print the help message
     files ending in .env and .sh will be sourced and used for environment variable substitution
     files ending in .json, .js, .toml, .yaml, and .yml will be merged
@@ -62,6 +62,8 @@ docker_compose_config=$(
 Files ending in `.json`, `.js`, `.toml`, `.yaml`, and `.yml` are merged together.  The merging algorithm uses the [lodash merge](https://lodash.com/docs/4.17.4#merge) function and operates:
 
 > Source properties that resolve to undefined are skipped if a destination value exists. Array and plain object properties are merged recursively. Other objects and value types are overridden by assignment. Source objects are applied from left to right. Subsequent sources overwrite property assignments of previous sources.
+
+Use the `-a`/`--array` argument to configure the merging behavior for arrays.
 
 ## Patching
 
