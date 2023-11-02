@@ -108,7 +108,7 @@ for (let arg of args) {
         else if (arg == "-a" || arg == "--array") {
             setFlag = "a"
         }
-        else if (arg == "-f" || arg == "--foramt") {
+        else if (arg == "-f" || arg == "--format") {
             setFlag = "f"
         }
         else {
