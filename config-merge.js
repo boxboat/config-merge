@@ -221,8 +221,7 @@ if (format == "json") {
         }
     })
 } else {
-    YAML.defaultOptions.simpleKeys = true
-    serialized = YAML.stringify(obj)
+    serialized = YAML.stringify(obj, options={simpleKeys: true})
 }
 
 if (format == "json" || format == "toml") {

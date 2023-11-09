@@ -2,14 +2,12 @@ FROM golang:alpine as build
 
 RUN apk add --update git
 
-RUN go get github.com/a8m/envsubst/cmd/envsubst \
-    && cd /go/src/github.com/a8m/envsubst/cmd/envsubst \
-    && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build
+RUN  env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go install github.com/a8m/envsubst/cmd/envsubst@latest
 
 
-FROM node:14-alpine
+FROM node:18-alpine
 
-COPY --from=build /go/src/github.com/a8m/envsubst/cmd/envsubst/envsubst /usr/local/bin/envsubst
+COPY --from=build /go/bin/envsubst /usr/local/bin/envsubst
 
 COPY config-merge.js source.sh package.json wrapper.sh /usr/local/config-merge/
 RUN cd /usr/local/config-merge \
