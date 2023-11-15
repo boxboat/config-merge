@@ -221,7 +221,10 @@ if (format == "json") {
         }
     })
 } else {
-    serialized = YAML.stringify(obj, options={simpleKeys: true})
+    serialized = YAML.stringify(obj, {
+        defaultStringType: 'QUOTE_DOUBLE',
+        simpleKeys: true
+    })
 }
 
 if (format == "json" || format == "toml") {
