@@ -2,6 +2,7 @@ const fs = require('fs')
 const glob = require('glob')
 const mergeWith = require('lodash.mergewith')
 const path = require('path')
+const JSON5 = require('json5')
 const YAML = require('yaml')
 const toml = require('toml-j0.4')
 const tomlify = require('tomlify-j0.4')
@@ -11,9 +12,11 @@ const { execFileSync } = require('child_process')
 // constants
 const envRe = new RegExp(/\.(?:env|sh)$/, "i")
 const mergeJsonRe = new RegExp(/\.(?:json|js)$/, "i")
+const mergeJson5Re = new RegExp(/\.json5$/, "i")
 const mergeYamlRe = new RegExp(/\.(?:yaml|yml)$/, "i")
 const mergeTomlRe = new RegExp(/\.toml$/, "i")
 const patchJsonRe = new RegExp(/\.patch\.(?:json|js)$/, "i")
+const patchJson5Re = new RegExp(/\.patch\.json5$/, "i")
 const patchYamlRe = new RegExp(/\.patch\.(?:yaml|yml)$/, "i")
 const patchTomlRe = new RegExp(/\.patch\.toml$/, "i")
 const envReserved = new Set(["_", "SHLVL"])
@@ -31,12 +34,12 @@ let obj = {}
 function printHelp() {
     console.error("boxboat/config-merge [flags] file1 [file2] ... [fileN]")
     console.error("-a, --array         merge|overwrite|concat   whether to merge, overwrite, or concatenate arrays.  defaults to merge")
-    console.error("-f, --format        json|toml|yaml   whether to output json, toml, or yaml.  defaults to yaml")
+    console.error("-f, --format        json|json5|toml|yaml   whether to output json, json5, toml, or yaml.  defaults to yaml")
     console.error("-h  --help          print the help message")
     console.error("    --no-envsubst   disable substituting env vars")
     console.error("    files ending in .env and .sh will be sourced and used for environment variable substitution")
-    console.error("    files ending in .json, .js, .toml, .yaml, and .yml will be merged")
-    console.error("    files ending in .patch.json, .patch.js, .patch.toml, .patch.yaml, and .patch.yml will be applied as JSONPatch")
+    console.error("    files ending in .json, .js, .json5, .toml, .yaml, and .yml will be merged")
+    console.error("    files ending in .patch.json, .patch.js, .patch.json5, .patch.toml, .patch.yaml, and .patch.yml will be applied as JSONPatch")
 }
 
 // loads a .env file into the current environment
@@ -93,11 +96,11 @@ for (let arg of args) {
                 process.exit(1)
             }
         } else if (setFlag == "f") {
-            if (arg == "json" || arg == "toml" || arg == "yaml") {
+            if (arg == "json" || arg == "json5" || arg == "toml" || arg == "yaml") {
                 format = arg
                 setFlag = null
             } else {
-                console.error(`Format should be "json", "toml", or "yaml", invalid: ${arg}`)
+                console.error(`Format should be "json", "json5", "toml", or "yaml", invalid: ${arg}`)
                 printHelp()
                 process.exit(1)
             }
@@ -168,6 +171,15 @@ for (arg of globArgs) {
                 process.exit(1)
             }
         }
+        else if (arg.match(patchJson5Re)) {
+            let json5Patch = JSON5.parse(readFileAndSubEnv(arg))
+            if (Array.isArray(json5Patch)) {
+                applyPatch(obj, json5Patch)
+            } else {
+                console.error(`JSON5 patch file '${arg}' must a top-level array of patches`)
+                process.exit(1)
+            }
+        }
         else if (arg.match(patchTomlRe)) {
             let tomlPatch = toml.parse(readFileAndSubEnv(arg))
             if (tomlPatch.patch) {
@@ -188,6 +200,9 @@ for (arg of globArgs) {
         }
         else if (arg.match(mergeJsonRe)) {
             mergeWith(obj, JSON.parse(readFileAndSubEnv(arg)), customizer)
+        }
+        else if (arg.match(mergeJson5Re)) {
+            mergeWith(obj, JSON5.parse(readFileAndSubEnv(arg)), customizer)
         }
         else if (arg.match(mergeTomlRe)) {
             mergeWith(obj, toml.parse(readFileAndSubEnv(arg)), customizer)
@@ -210,6 +225,8 @@ for (arg of globArgs) {
 let serialized
 if (format == "json") {
     serialized = JSON.stringify(obj, null, "  ")
+} else if (format == "json5") {
+    serialized = JSON5.stringify(obj, null, "  ")
 } else if (format == "toml") {
     serialized = tomlify.toToml(obj, {
         space: 2,
@@ -224,7 +241,7 @@ if (format == "json") {
     serialized = YAML.stringify(obj, options={simpleKeys: true})
 }
 
-if (format == "json" || format == "toml") {
+if (format == "json" || format == "json5" || format == "toml") {
     // json and toml do not print a newline by default
     console.log(serialized)
 } else {

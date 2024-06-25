@@ -2,23 +2,24 @@
 
 ![test](https://github.com/boxboat/config-merge/workflows/test/badge.svg)
 
-Tool for merging JSON/TOML/YAML files and performing environment variable substitution.  Runs in a Docker Container.
+Tool for merging JSON/JSON5/TOML/YAML files and performing environment variable substitution.  Runs in a Docker Container.
 
 ## Usage
 
 `config-merge` is released on [DockerHub](https://hub.docker.com/r/boxboat/config-merge/).  Usage can be seen by running with the `-h` flag
 
-```
-docker pull boxboat/config-merge
-docker run --rm boxboat/config-merge -h
+```bash
+$ docker pull boxboat/config-merge
+$ docker run --rm boxboat/config-merge -h
 
-boxboat/config-merge [-fnh] file1 [file2] ... [fileN]
--a, --array    merge|overwrite|concat   whether to merge, overwrite, or concatenate arrays.  defaults to merge
--f, --format   json|toml|yaml           whether to output json, toml, or yaml.  defaults to yaml
--h  --help     print the help message
+boxboat/config-merge [flags] file1 [file2] ... [fileN]
+-a, --array         merge|overwrite|concat   whether to merge, overwrite, or concatenate arrays.  defaults to merge
+-f, --format        json|json5|toml|yaml   whether to output json, json5, toml, or yaml.  defaults to yaml
+-h  --help          print the help message
+    --no-envsubst   disable substituting env vars
     files ending in .env and .sh will be sourced and used for environment variable substitution
-    files ending in .json, .js, .toml, .yaml, and .yml will be merged
-    files ending in .patch.json, .patch.js, .patch.toml, .patch.yaml, and .patch.yml will be applied as JSONPatch
+    files ending in .json, .js, .json5, .toml, .yaml, and .yml will be merged
+    files ending in .patch.json, .patch.js, .patch.json5, .patch.toml, .patch.yaml, and .patch.yml will be applied as JSONPatch
 ```
 
 The working directory of the container is `/home/node` and files/directories that get merged should be mounted into this directory.
@@ -27,7 +28,7 @@ The working directory of the container is `/home/node` and files/directories tha
 
 This example considers building a Docker Compose file that can be used for production, but also tested locally.  The production compose file contains an extra network that is not available to the local developer.  We are able to use the patching feature of `config-merge` to remove the unneeded network, and use the environment variable substitution feature to add a custom network.
 
-```
+```bash
 docker_compose_config=$(
     docker run --rm \
     -v "$(pwd)/test/docker-compose/:/home/node/" \
@@ -48,7 +49,7 @@ EOF
 
 Globbing is supported, but should be escaped in the `docker run` script so that expansion will occur inside of the container:
 
-```
+```bash
 docker_compose_config=$(
     docker run --rm \
     -v "$(pwd)/test/docker-compose/:/home/node/" \
@@ -59,7 +60,7 @@ docker_compose_config=$(
 
 ## Merging
 
-Files ending in `.json`, `.js`, `.toml`, `.yaml`, and `.yml` are merged together.  The merging algorithm uses the [lodash merge](https://lodash.com/docs/4.17.4#merge) function and operates:
+Files ending in `.json`, `.js`, `.json5`, `.toml`, `.yaml`, and `.yml` are merged together.  The merging algorithm uses the [lodash merge](https://lodash.com/docs/4.17.4#merge) function and operates:
 
 > Source properties that resolve to undefined are skipped if a destination value exists. Array and plain object properties are merged recursively. Other objects and value types are overridden by assignment. Source objects are applied from left to right. Subsequent sources overwrite property assignments of previous sources.
 
@@ -67,7 +68,7 @@ Use the `-a`/`--array` argument to configure the merging behavior for arrays.
 
 ## Patching
 
-Files ending in `.patch.json`, `.patch.js`, `.patch.toml`, `.patch.yaml`, and `.patch.yml` are applied as [JSON Patch](http://jsonpatch.com/)
+Files ending in `.patch.json`, `.patch.js`, `.patch.json5`, `.patch.toml`, `.patch.yaml`, and `.patch.yml` are applied as [JSON Patch](http://jsonpatch.com/)
 
 ## Environment Variable Substitution
 
